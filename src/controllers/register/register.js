@@ -1,18 +1,18 @@
-import bcrypt from "bcryptjs";
-import { v4 } from "uuid";
-import yup from "yup";
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
+const yup = require("yup");
 
-import { User } from "../../sequelize/models";
-import createConfirmEmailLink from "../../utils/createConfirmEmailLink";
-import Error from "../../utils/Error";
-import formatYupError from "../../utils/formatYupError";
-import redis from "../../utils/redis";
-import {
+const { User } = require("../../sequelize/models");
+const createConfirmEmailLink = require("../../utils/createConfirmEmailLink");
+const Error = require("../../utils/Error");
+const formatYupError = require("../../utils/formatYupError");
+const redis = require("../../utils/redis");
+const {
   duplicateEmail,
   emailNotLongEnough,
   invalidEmail,
   passwordNotLongEnough,
-} from "./errorMessages";
+} = require("./errorMessages");
 
 const schema = yup.object().shape({
   email: yup.string().min(3, emailNotLongEnough).max(255).email(invalidEmail),
@@ -42,7 +42,7 @@ const register = async (req, res, next) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await User.create({
-    userId: v4(),
+    userId: uuidv4(),
     email,
     password: hashedPassword,
   });

@@ -1,4 +1,4 @@
-import { v4 } from "uuid";
+const { v4 } = require("uuid");
 
 const createConfirmEmailLink = async (url, userId, redis) => {
   const id = v4();
@@ -6,4 +6,4 @@ const createConfirmEmailLink = async (url, userId, redis) => {
   return `${url}/confirm/${id}`;
 };
 
-export default createConfirmEmailLink;
+module.exports = createConfirmEmailLink;

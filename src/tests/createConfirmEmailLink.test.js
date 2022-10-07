@@ -1,9 +1,9 @@
-import Redis from "ioredis";
-import { v4 } from "uuid";
-import fetch from "node-fetch";
+const Redis = require("ioredis");
+const { v4 } = require("uuid");
+const fetch = require("node-fetch");
 
-import createConfirmEmailLink from "../utils/createConfirmEmailLink";
-import { User } from "../sequelize/models";
+const createConfirmEmailLink = require("../utils/createConfirmEmailLink");
+const { User } = require("../sequelize/models");
 
 let userId;
 
@@ -18,14 +18,26 @@ beforeAll(async () => {
 
 describe("Test createConfirmEmailLink", () => {
   test("Make sure createConfirmEmailLink works", async () => {
+    const redis = new Redis();
     const url = await createConfirmEmailLink(
       "http://localhost:8000",
       userId,
-      new Redis()
+      redis
     );
     const response = await fetch(url);
-    const data = response.json();
+    const data = await response.json();
 
-    console.log({ data });
+    expect(data.message).toEqual("User updated successfully");
+
+    const user = await User.findOne({
+      where: { userId },
+    });
+    console.log({ user });
+
+    expect(user.confirmed).toBeTruthy();
+    const chunks = url.split("/");
+    const key = chunks[chunks.length - 1];
+    const value = await redis.get(key);
+    expect(value).toBeUndefined();
   });
 });

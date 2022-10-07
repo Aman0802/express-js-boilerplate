@@ -1,4 +1,4 @@
-import Error from "./Error";
+const Error = require("./Error");
 
 const formatYupError = (err) => {
   const errors = [];
@@ -9,4 +9,4 @@ const formatYupError = (err) => {
   return errors;
 };
 
-export default formatYupError;
+module.exports = formatYupError;

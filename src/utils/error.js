@@ -5,4 +5,4 @@ const Error = (path, message) => {
   };
 };
 
-export default Error;
+module.exports = Error;

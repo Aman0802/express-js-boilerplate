@@ -1,8 +1,8 @@
-import express from "express";
-import register from "../controllers/register/register";
+const express = require("express");
+const register = require("../controllers/register/register");
 
-import { User } from "../sequelize/models";
-import redis from "../utils/redis";
+const { User } = require("../sequelize/models");
+const redis = require("../utils/redis");
 
 const router = express.Router();
 
@@ -29,6 +29,7 @@ router.get("/confirm/:id", async (req, res, next) => {
 
   if (userId) {
     await User.update({ confirmed: true }, { where: { userId } });
+    await redis.del(id);
     res.send({
       message: "User updated successfully",
     });
